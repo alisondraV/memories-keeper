@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.memorieskeeper.services.CustomGoogleAuth;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -15,8 +17,17 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         findViewById(R.id.btnLogout).setOnClickListener(view -> {
-            FirebaseAuth.getInstance().signOut();
-            LoginActivity.signOutLauncher.launch(new Intent(this, LoginActivity.class));
+            CustomGoogleAuth.getGoogleSignInClient(this).signOut().addOnCompleteListener(result -> {
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+            });
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     }
 }

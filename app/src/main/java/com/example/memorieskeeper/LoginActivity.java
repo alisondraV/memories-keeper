@@ -10,37 +10,25 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.memorieskeeper.services.CustomGoogleAuth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "GoogleActivity";
-    private static final int RC_SIGN_IN = 9001;
-
-    private FirebaseAuth mAuth;
-
-    private GoogleSignInClient mGoogleSignInClient;
 
     ActivityResultLauncher<Intent> signInLauncher;
-    public static ActivityResultLauncher<Intent> signOutLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestIdToken(getString(R.string.default_web_client_id)) // TODO: figure out why this can't be referenced
-                .requestIdToken("320345093698-cek38qs1d9t13ajfofm8ha8vc1ejdakq.apps.googleusercontent.com")
-                .requestEmail()
-                .build();
-
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         signInLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -51,15 +39,6 @@ public class LoginActivity extends AppCompatActivity {
                         handleSignInResult(task);
                     }
                 });
-        if (signOutLauncher == null) {
-            signOutLauncher = registerForActivityResult(
-                    new ActivityResultContracts.StartActivityForResult(),
-                    result -> {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            signOut();
-                        }
-                    });
-        }
     }
 
     @Override
@@ -67,37 +46,44 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
 
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        updateUI(account);
+        updateUI(account != null);
     }
 
     private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        Intent signInIntent = CustomGoogleAuth.getGoogleSignInClient(this).getSignInIntent();
         signInLauncher.launch(signInIntent);
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            updateUI(account);
+            if (account != null) {
+                firebaseAuthWithGoogle(account.getIdToken());
+            }
         } catch (ApiException e) {
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-            updateUI(null);
+            updateUI(false);
         }
     }
 
-    private void signOut() {
-        mGoogleSignInClient.signOut()
+    private void firebaseAuthWithGoogle(String idToken) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        FirebaseAuth.getInstance().signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
-                    updateUI(null);
+                    if (task.isSuccessful()) {
+                        updateUI(true);
+                    } else {
+                        Log.w(TAG, "signInWithCredential:failure", task.getException());
+                    }
                 });
     }
 
-    private void updateUI(GoogleSignInAccount account) {
+    private void updateUI(boolean isSignedIn) {
         setContentView(R.layout.activity_login);
 
         findViewById(R.id.btnSignIn).setOnClickListener(view -> signIn());
 
-        if (account != null) {
+        if (isSignedIn) {
             startActivity(new Intent(this, HomeActivity.class));
         }
     }
