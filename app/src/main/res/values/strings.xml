@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">MemoriesKeeper</string>
+    <string name="app_name">Memories Keeper</string>
+    <string name="welcome">Welcome to the Memories Keeper App!</string>
+    <string name="sign_in">Sign In</string>
 </resources>
