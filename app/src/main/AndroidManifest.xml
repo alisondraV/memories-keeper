@@ -10,6 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MemoriesKeeper">
         <activity
+            android:name=".AddMemoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ListActivity"
+            android:exported="false"
+            android:label="@string/title_activity_list"
+            android:theme="@style/Theme.MemoriesKeeper.NoActionBar" />
+        <activity
             android:name=".HomeActivity"
             android:exported="true" />
         <activity

@@ -2,4 +2,9 @@
     <string name="app_name">Memories Keeper</string>
     <string name="welcome">Welcome to the Memories Keeper App!</string>
     <string name="sign_in">Sign In</string>
+    <string name="title_activity_list">ListActivity</string>
+    <string name="first_fragment_label">Your Memories List</string>
+    <string name="second_fragment_label">Something else</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
 </resources>

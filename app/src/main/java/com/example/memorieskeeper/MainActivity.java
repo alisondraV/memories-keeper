@@ -81,6 +81,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void forwardToHome() {
-        startActivity(new Intent(this, HomeActivity.class));
+        startActivity(new Intent(this, ListActivity.class));
     }
 }
