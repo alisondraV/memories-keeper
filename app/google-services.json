@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "320345093698",
+    "project_id": "aa-memories-keeper",
+    "storage_bucket": "aa-memories-keeper.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320345093698:android:d44ce8c30838bd3d401fdb",
+        "android_client_info": {
+          "package_name": "com.example.memorieskeeper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "320345093698-471sbsuvq4gjo5c28f7fridn21t9kkv0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.memorieskeeper",
+            "certificate_hash": "e97306e2c26693323c3cbaed77f10f4c6a18b095"
+          }
+        },
+        {
+          "client_id": "320345093698-cek38qs1d9t13ajfofm8ha8vc1ejdakq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCslwWXoUej6s5t6c3v6ebp7__1Lc__aqo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "320345093698-cek38qs1d9t13ajfofm8ha8vc1ejdakq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
