@@ -2,7 +2,6 @@ package com.example.memorieskeeper;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -14,14 +13,12 @@ import com.example.memorieskeeper.services.CustomGoogleAuth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class LoginActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
     private static final String TAG = "GoogleActivity";
 
     ActivityResultLauncher<Intent> signInLauncher;
@@ -39,6 +36,10 @@ public class LoginActivity extends AppCompatActivity {
                         handleSignInResult(task);
                     }
                 });
+
+        setContentView(R.layout.activity_main);
+
+        findViewById(R.id.btnSignIn).setOnClickListener(view -> signIn());
     }
 
     @Override
@@ -46,7 +47,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
 
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        updateUI(account != null);
+        if (account != null) {
+            forwardToHome();
+        }
     }
 
     private void signIn() {
@@ -62,7 +65,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         } catch (ApiException e) {
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-            updateUI(false);
         }
     }
 
@@ -71,20 +73,14 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseAuth.getInstance().signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        updateUI(true);
+                        forwardToHome();
                     } else {
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
                     }
                 });
     }
 
-    private void updateUI(boolean isSignedIn) {
-        setContentView(R.layout.activity_login);
-
-        findViewById(R.id.btnSignIn).setOnClickListener(view -> signIn());
-
-        if (isSignedIn) {
-            startActivity(new Intent(this, HomeActivity.class));
-        }
+    private void forwardToHome() {
+        startActivity(new Intent(this, HomeActivity.class));
     }
 }

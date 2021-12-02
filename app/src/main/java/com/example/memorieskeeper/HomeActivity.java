@@ -18,7 +18,7 @@ public class HomeActivity extends AppCompatActivity {
 
         findViewById(R.id.btnLogout).setOnClickListener(view -> {
             CustomGoogleAuth.getGoogleSignInClient(this).signOut().addOnCompleteListener(result -> {
-                startActivity(new Intent(this, LoginActivity.class));
+                startActivity(new Intent(this, MainActivity.class));
                 finish();
             });
         });
