@@ -13,7 +13,7 @@
             android:name=".AddMemoryActivity"
             android:exported="false" />
         <activity
-            android:name=".ListActivity"
+            android:name=".HomeActivity"
             android:exported="false"
             android:label="@string/title_activity_list"
             android:theme="@style/Theme.MemoriesKeeper.NoActionBar" />

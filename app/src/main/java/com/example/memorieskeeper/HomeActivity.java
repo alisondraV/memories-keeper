@@ -17,19 +17,19 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.memorieskeeper.databinding.ActivityListBinding;
+import com.example.memorieskeeper.databinding.ActivityHomeBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class ListActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
-    private ActivityListBinding binding;
+    private ActivityHomeBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityListBinding.inflate(getLayoutInflater());
+        binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.toolbar);
@@ -38,7 +38,7 @@ public class ListActivity extends AppCompatActivity {
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-        binding.fab.setOnClickListener(view -> startActivity(new Intent(ListActivity.this, AddMemoryActivity.class)));
+        binding.fab.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, AddMemoryActivity.class)));
     }
 
     @Override
