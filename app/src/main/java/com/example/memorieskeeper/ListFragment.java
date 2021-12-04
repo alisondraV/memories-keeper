@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.memorieskeeper.databinding.FragmentListBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,6 +27,7 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
+    FirebaseUser user;
     ArrayAdapter arrayAdapter;
     ArrayList<MemoryModel> arrayList = new ArrayList<>();
 
@@ -37,6 +40,7 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Memories");
+        user = FirebaseAuth.getInstance().getCurrentUser();
         arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, arrayList);
         setListAdapter(arrayAdapter);
 
@@ -44,7 +48,9 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 MemoryModel memory = snapshot.getValue(MemoryModel.class);
-                arrayList.add(memory);
+                if (memory.getUserId().equals(user.getUid())) {
+                    arrayList.add(memory);
+                }
                 arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, arrayList);
                 setListAdapter(arrayAdapter);
             }

@@ -2,24 +2,19 @@ package com.example.memorieskeeper;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.example.memorieskeeper.services.CustomGoogleAuth;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.memorieskeeper.databinding.ActivityHomeBinding;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.example.memorieskeeper.services.CustomGoogleAuth;
 
 public class HomeActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
@@ -65,12 +60,5 @@ public class HomeActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     }
 }
