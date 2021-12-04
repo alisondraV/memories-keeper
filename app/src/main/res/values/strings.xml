@@ -8,4 +8,9 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="log_out">Log out</string>
+    <string name="add_memory">Add Memory</string>
+    <string name="add_new_memory">Add New Memory</string>
+    <string name="name">Name:</string>
+    <string name="location">Location:</string>
+    <string name="description">Description:</string>
 </resources>
