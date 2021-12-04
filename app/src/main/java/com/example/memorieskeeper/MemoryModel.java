@@ -1,10 +1,14 @@
 package com.example.memorieskeeper;
 
+import androidx.annotation.NonNull;
+
 public class MemoryModel {
     private String userId;
     private String name;
     private String description;
     private String location;
+
+    public MemoryModel() { }
 
     public MemoryModel(String userId, String name, String description, String location) {
         this.userId = userId;
@@ -43,5 +47,11 @@ public class MemoryModel {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return name;
     }
 }
