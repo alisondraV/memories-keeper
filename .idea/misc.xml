@@ -3,17 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="../../../.gradle/caches/transforms-3/61327252b97b04f60e697e9245a0fce3/transformed/jetified-play-services-base-17.1.0/res/drawable/common_google_signin_btn_text_dark_focused.xml" value="0.2917948717948718" />
-        <entry key="app/src/main/res/drawable/add_memory_foreground.xml" value="0.2917948717948718" />
-        <entry key="app/src/main/res/layout/activity_add_memory.xml" value="0.21422101449275363" />
-        <entry key="app/src/main/res/layout/activity_home.xml" value="0.21422101449275363" />
-        <entry key="app/src/main/res/layout/activity_list.xml" value="0.21422101449275363" />
+        <entry key="..\:/Users/andre/OneDrive/Documents/Conestoga/Fall_2021/Mobile/memories-keeper/app/src/main/res/layout/fragment_memory.xml" value="0.12916666666666668" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/content_list.xml" value="0.21422101449275363" />
-        <entry key="app/src/main/res/layout/fragment_first.xml" value="0.21422101449275363" />
-        <entry key="app/src/main/res/layout/fragment_second.xml" value="0.22418478260869565" />
-        <entry key="app/src/main/res/menu/options_menu.xml" value="0.28020833333333334" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.16354166666666667" />
       </map>
     </option>

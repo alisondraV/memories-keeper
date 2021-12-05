@@ -13,4 +13,5 @@
     <string name="name">Name:</string>
     <string name="location">Location:</string>
     <string name="description">Description:</string>
+    <string name="memories_collection_name">Memories</string>
 </resources>

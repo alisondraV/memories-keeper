@@ -39,9 +39,9 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
         binding = FragmentListBinding.inflate(inflater, container, false);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("Memories");
+        databaseReference = firebaseDatabase.getReference(getString(R.string.memories_collection_name));
         user = FirebaseAuth.getInstance().getCurrentUser();
-        arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, arrayList);
+        arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, arrayList);
         setListAdapter(arrayAdapter);
 
         databaseReference.addChildEventListener(new ChildEventListener() {
@@ -51,7 +51,7 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
                 if (memory.getUserId().equals(user.getUid())) {
                     arrayList.add(memory);
                 }
-                arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, arrayList);
+                arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, arrayList);
                 setListAdapter(arrayAdapter);
             }
 
@@ -78,7 +78,7 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 NavHostFragment.findNavController(ListFragment.this)
-                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
+                        .navigate(R.id.action_ListFragment_to_MemoryFragment);
             }
         });
     }
