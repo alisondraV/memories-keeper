@@ -41,6 +41,7 @@ public class AddMemoryActivity extends AppCompatActivity {
     boolean boundToFileService = false;
     FileService fileService;
     ActivityResultLauncher<Intent> pickFileLauncher;
+    Uri pickedPhotoUri = null;
 
     ValueEventListener onButtonClickEventListener = new ValueEventListener() {
         @Override
@@ -61,21 +62,20 @@ public class AddMemoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_memory);
 
         // bind to services
-        Intent intent = new Intent(this, FileService.class);
-        bindService(intent, fileServiceConnection, Context.BIND_AUTO_CREATE);
+        Intent fileServiceIntent = new Intent(this, FileService.class);
+        bindService(fileServiceIntent, fileServiceConnection, Context.BIND_AUTO_CREATE);
 
         pickFileLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
-                        Uri uri = null;
                         Intent resultData = result.getData();
                         if (resultData != null) {
-                            uri = resultData.getData();
-
+                            pickedPhotoUri = resultData.getData();
                         }
                     }
-                });
+                }
+            );
 
         // get UI elements
         txtName = findViewById(R.id.txtName);
@@ -103,19 +103,19 @@ public class AddMemoryActivity extends AppCompatActivity {
 
         btnUploadPhoto.setOnClickListener(view -> {
             Intent openFileIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("image/*");
+            openFileIntent.addCategory(Intent.CATEGORY_OPENABLE);
+            openFileIntent.setType("image/*");
             pickFileLauncher.launch(openFileIntent);
 
-            Thread thread = new Thread(() -> {
-                try {
-                    Thread.sleep(5000);
-                    String imageUrl = fileService.uploadFile();
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            });
-            thread.start();
+//            Thread thread = new Thread(() -> {
+//                try {
+//                    Thread.sleep(5000);
+//                    String imageUrl = fileService.uploadFile();
+//                } catch (InterruptedException e) {
+//                    Thread.currentThread().interrupt();
+//                }
+//            });
+//            thread.start();
         });
     }
 
