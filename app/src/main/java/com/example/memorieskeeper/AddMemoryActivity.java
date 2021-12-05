@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.memorieskeeper.services.FileService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -48,6 +49,7 @@ public class AddMemoryActivity extends AppCompatActivity {
         txtDescription = findViewById(R.id.txtDescription);
         txtLocation = findViewById(R.id.txtLocation);
         btnAddMemory = findViewById(R.id.btnAddMemory);
+        Button btnUploadPhoto = findViewById(R.id.btnUploadPhoto);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference(getString(R.string.memories_collection_name));
@@ -62,6 +64,9 @@ public class AddMemoryActivity extends AppCompatActivity {
             databaseReference.child(UUID.randomUUID().toString()).setValue(newMemory);
 
             databaseReference.addValueEventListener(onButtonClickEventListener);
+        });
+
+        btnUploadPhoto.setOnClickListener(view -> {
         });
     }
 
