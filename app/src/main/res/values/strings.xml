@@ -16,4 +16,5 @@
     <string name="memories_collection_name">Memories</string>
     <string name="photo">Photo</string>
     <string name="upload">Upload</string>
+    <string name="image_bytes">imageBytes</string>
 </resources>

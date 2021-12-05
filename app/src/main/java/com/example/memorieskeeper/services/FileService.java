@@ -5,33 +5,59 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
-import android.os.Binder;
+import android.net.Uri;
 import android.os.IBinder;
 
+import androidx.annotation.NonNull;
+
 import com.example.memorieskeeper.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.UploadTask;
 
 public class FileService extends Service {
+    public static final String BYTES_PARAM = "imageBytes";
+    public static final String IMAGE_NAME_PARAM = "imageName";
     final int NOTIFICATION_ID = 1;
     final String CHANNEL_ID = "main";
 
     private NotificationManager notificationManager;
-    private final IBinder binder = new FileServiceBinder();
-
-    public class FileServiceBinder extends Binder {
-        public FileService getService() {
-            return FileService.this;
-        }
-    }
 
     @Override
     public IBinder onBind(Intent intent) {
-        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        showNotification();
-        return binder;
+        return null;
     }
 
-    public String uploadFile() {
-        return "https://i.natgeofe.com/n/3861de2a-04e6-45fd-aec8-02e7809f9d4e/02-cat-training-NationalGeographic_1484324_square.jpg";
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        showNotification();
+
+        byte[] imageBytes = intent.getByteArrayExtra(BYTES_PARAM);
+        String imageName = intent.getStringExtra(IMAGE_NAME_PARAM);
+
+        uploadImageToFirebase(imageName, imageBytes);
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void uploadImageToFirebase(String imageName, byte[] imageBytes) {
+        Thread thread = new Thread(() -> {
+            try {
+                Thread.sleep(5000);
+                FirebaseStorage.getInstance()
+                        .getReference(imageName)
+                        .putBytes(imageBytes)
+                        .addOnCompleteListener(task -> {
+                            stopSelf();
+                            hideNotification();
+                        });
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+        thread.start();
     }
 
     @Override
@@ -44,7 +70,7 @@ public class FileService extends Service {
         NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "main", NotificationManager.IMPORTANCE_HIGH);
         notificationManager.createNotificationChannel(notificationChannel);
         Notification.Builder fileServiceNotificationBuilder = new Notification.Builder(this, CHANNEL_ID)
-                .setContentTitle("File Service")
+                .setContentTitle("Creating memory...")
                 .setContentText("You're currently using the file service to upload images for your memory.")
                 .setSmallIcon(R.drawable.common_google_signin_btn_icon_light);
         Notification fileServiceNotification = fileServiceNotificationBuilder.build();
