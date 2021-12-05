@@ -68,7 +68,7 @@ public class AddMemoryActivity extends AppCompatActivity {
         });
 
         btnUploadPhoto.setOnClickListener(view -> {
-            startForegroundService(new Intent(this, FileService.class));
+            startService(new Intent(this, FileService.class));
         });
     }
 

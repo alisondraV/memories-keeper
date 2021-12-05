@@ -1,6 +1,7 @@
 package com.example.memorieskeeper.services;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
@@ -11,9 +12,13 @@ import android.os.Looper;
 import android.os.Message;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+
+import com.example.memorieskeeper.R;
 
 public class FileService extends Service {
     final int NOTIFICATION_ID = 1;
+    final String CHANNEL_ID = "main";
 
     private Looper serviceLooper;
     private ServiceHandler serviceHandler;
@@ -50,8 +55,12 @@ public class FileService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Notification.Builder fileServiceNotificationBuilder = new Notification.Builder(this, "temp")
-                .setContentTitle("Service started");
+        NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "main", NotificationManager.IMPORTANCE_HIGH);
+        notificationManager.createNotificationChannel(notificationChannel);
+        Notification.Builder fileServiceNotificationBuilder = new Notification.Builder(this, CHANNEL_ID)
+                .setContentTitle("Service started")
+                .setContentText("Service started")
+                .setSmallIcon(R.drawable.common_google_signin_btn_icon_light);
         Notification fileServiceNotification = fileServiceNotificationBuilder.build();
         notificationManager.notify(NOTIFICATION_ID, fileServiceNotification);
 
