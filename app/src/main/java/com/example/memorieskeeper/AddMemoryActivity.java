@@ -4,8 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +31,8 @@ public class AddMemoryActivity extends AppCompatActivity {
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     FirebaseUser user;
+    boolean boundToFileService = false;
+    FileService fileService;
 
     ValueEventListener onButtonClickEventListener = new ValueEventListener() {
         @Override
@@ -46,16 +52,23 @@ public class AddMemoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_memory);
 
+        // bind to services
+        Intent intent = new Intent(this, FileService.class);
+        bindService(intent, fileServiceConnection, Context.BIND_AUTO_CREATE);
+
+        // get UI elements
         txtName = findViewById(R.id.txtName);
         txtDescription = findViewById(R.id.txtDescription);
         txtLocation = findViewById(R.id.txtLocation);
         btnAddMemory = findViewById(R.id.btnAddMemory);
         Button btnUploadPhoto = findViewById(R.id.btnUploadPhoto);
 
+        // get database and auth reference
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference(getString(R.string.memories_collection_name));
         user = FirebaseAuth.getInstance().getCurrentUser();
 
+        // configure UI elements
         btnAddMemory.setOnClickListener(view -> {
             MemoryModel newMemory = new MemoryModel(
                     user.getUid(),
@@ -68,13 +81,38 @@ public class AddMemoryActivity extends AppCompatActivity {
         });
 
         btnUploadPhoto.setOnClickListener(view -> {
-            startService(new Intent(this, FileService.class));
+            Thread thread = new Thread(() -> {
+                try {
+                    Thread.sleep(5000);
+                    String imageUrl = fileService.uploadFile();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            });
+            thread.start();
         });
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        unbindService(fileServiceConnection);
         databaseReference.removeEventListener(onButtonClickEventListener);
     }
+
+    private final ServiceConnection fileServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            FileService.FileServiceBinder binder = (FileService.FileServiceBinder) service;
+            fileService = binder.getService();
+            boundToFileService = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            boundToFileService = false;
+        }
+    };
 }
