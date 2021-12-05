@@ -2,6 +2,7 @@ package com.example.memorieskeeper;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.Bundle;
 import android.widget.Button;
@@ -16,6 +17,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.UUID;
+
 public class AddMemoryActivity extends AppCompatActivity {
     TextView txtName, txtDescription, txtLocation;
     Button btnAddMemory;
@@ -23,12 +26,11 @@ public class AddMemoryActivity extends AppCompatActivity {
     DatabaseReference databaseReference;
     FirebaseUser user;
 
-    long maxId = 0;
-
     ValueEventListener onButtonClickEventListener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
             Toast.makeText(AddMemoryActivity.this, "Memory has been successfully created!", Toast.LENGTH_SHORT).show();
+            finish();
         }
 
         @Override
@@ -48,18 +50,8 @@ public class AddMemoryActivity extends AppCompatActivity {
         btnAddMemory = findViewById(R.id.btnAddMemory);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("Memories");
+        databaseReference = firebaseDatabase.getReference(getString(R.string.memories_collection_name));
         user = FirebaseAuth.getInstance().getCurrentUser();
-
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                maxId = snapshot.getChildrenCount();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) { }
-        });
 
         btnAddMemory.setOnClickListener(view -> {
             MemoryModel newMemory = new MemoryModel(
@@ -67,7 +59,7 @@ public class AddMemoryActivity extends AppCompatActivity {
                     String.valueOf(txtName.getText()),
                     String.valueOf(txtDescription.getText()),
                     String.valueOf(txtLocation.getText()));
-            databaseReference.child(String.valueOf(maxId + 1)).setValue(newMemory);
+            databaseReference.child(UUID.randomUUID().toString()).setValue(newMemory);
 
             databaseReference.addValueEventListener(onButtonClickEventListener);
         });

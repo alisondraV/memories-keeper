@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,14 +33,10 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
     ArrayList<MemoryModel> arrayList = new ArrayList<>();
 
     @Override
-    public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState
-    ) {
-        binding = FragmentListBinding.inflate(inflater, container, false);
+    public void onStart() {
+        super.onStart();
 
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference(getString(R.string.memories_collection_name));
+        databaseReference = FirebaseDatabase.getInstance().getReference(getString(R.string.memories_collection_name));
         user = FirebaseAuth.getInstance().getCurrentUser();
         arrayList = new ArrayList<>();
         arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, arrayList);
@@ -57,31 +54,39 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
             }
 
             @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            }
 
             @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+            }
 
             @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
         });
+    }
 
+    @Override
+    public View onCreateView(
+            LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState
+    ) {
+        binding = FragmentListBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    @Override
+    public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
 
-        binding.list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                NavHostFragment.findNavController(ListFragment.this)
-                        .navigate(R.id.action_ListFragment_to_MemoryFragment);
-            }
-        });
+        NavHostFragment
+                .findNavController(ListFragment.this)
+                .navigate(R.id.action_ListFragment_to_MemoryFragment);
     }
 
     @Override
@@ -89,5 +94,4 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
         super.onDestroyView();
         binding = null;
     }
-
 }
