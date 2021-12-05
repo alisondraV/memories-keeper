@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -18,16 +17,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 
 public class ListFragment extends androidx.fragment.app.ListFragment {
     private FragmentListBinding binding;
 
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
+    Query memoriesQuery;
     FirebaseUser user;
     ArrayAdapter<MemoryModel> arrayAdapter;
     ArrayList<MemoryModel> arrayList = new ArrayList<>();
@@ -36,13 +34,13 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
     public void onStart() {
         super.onStart();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference(getString(R.string.memories_collection_name));
+        memoriesQuery = FirebaseDatabase.getInstance().getReference(getString(R.string.memories_collection_name)).orderByChild("createdAt");
         user = FirebaseAuth.getInstance().getCurrentUser();
         arrayList = new ArrayList<>();
         arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, arrayList);
         setListAdapter(arrayAdapter);
 
-        databaseReference.addChildEventListener(new ChildEventListener() {
+        memoriesQuery.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 MemoryModel memory = snapshot.getValue(MemoryModel.class);
