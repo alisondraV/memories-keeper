@@ -92,11 +92,12 @@
                 android:layout_height="wrap_content"
                 android:text="@string/photo" />
 
-            <Button
-                android:id="@+id/btnUploadPhoto"
-                android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/imgMemoryPicture"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/upload" />
+                app:srcCompat="@drawable/add_memory_foreground" />
+
         </TableRow>
     </TableLayout>
 

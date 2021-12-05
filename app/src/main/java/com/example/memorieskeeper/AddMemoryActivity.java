@@ -1,5 +1,6 @@
 package com.example.memorieskeeper;
 
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,13 +37,20 @@ import java.util.UUID;
 public class AddMemoryActivity extends AppCompatActivity {
     TextView txtName, txtDescription, txtLocation;
     Button btnAddMemory;
+    ImageView imgMemoryPicture;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     FirebaseUser user;
     boolean boundToFileService = false;
     FileService fileService;
-    ActivityResultLauncher<Intent> pickFileLauncher;
     Uri pickedPhotoUri = null;
+
+    ActivityResultLauncher<String> mGetContent = registerForActivityResult(
+            new ActivityResultContracts.GetContent(),
+            uri -> {
+                pickedPhotoUri = uri;
+                imgMemoryPicture.setImageURI(uri);
+            });
 
     ValueEventListener onButtonClickEventListener = new ValueEventListener() {
         @Override
@@ -65,24 +74,12 @@ public class AddMemoryActivity extends AppCompatActivity {
         Intent fileServiceIntent = new Intent(this, FileService.class);
         bindService(fileServiceIntent, fileServiceConnection, Context.BIND_AUTO_CREATE);
 
-        pickFileLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent resultData = result.getData();
-                        if (resultData != null) {
-                            pickedPhotoUri = resultData.getData();
-                        }
-                    }
-                }
-            );
-
         // get UI elements
         txtName = findViewById(R.id.txtName);
         txtDescription = findViewById(R.id.txtDescription);
         txtLocation = findViewById(R.id.txtLocation);
         btnAddMemory = findViewById(R.id.btnAddMemory);
-        Button btnUploadPhoto = findViewById(R.id.btnUploadPhoto);
+        imgMemoryPicture = findViewById(R.id.imgMemoryPicture);
 
         // get database and auth reference
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -99,15 +96,8 @@ public class AddMemoryActivity extends AppCompatActivity {
             databaseReference.child(UUID.randomUUID().toString()).setValue(newMemory);
 
             databaseReference.addValueEventListener(onButtonClickEventListener);
-        });
 
-        btnUploadPhoto.setOnClickListener(view -> {
-            Intent openFileIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            openFileIntent.addCategory(Intent.CATEGORY_OPENABLE);
-            openFileIntent.setType("image/*");
-            pickFileLauncher.launch(openFileIntent);
-
-//            Thread thread = new Thread(() -> {
+            //            Thread thread = new Thread(() -> {
 //                try {
 //                    Thread.sleep(5000);
 //                    String imageUrl = fileService.uploadFile();
@@ -117,20 +107,23 @@ public class AddMemoryActivity extends AppCompatActivity {
 //            });
 //            thread.start();
         });
+
+        imgMemoryPicture.setOnClickListener(view -> {
+            mGetContent.launch("image/*");
+        });
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         unbindService(fileServiceConnection);
+        mGetContent.unregister();
         databaseReference.removeEventListener(onButtonClickEventListener);
     }
 
     private final ServiceConnection fileServiceConnection = new ServiceConnection() {
         @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
+        public void onServiceConnected(ComponentName className, IBinder service) {
             FileService.FileServiceBinder binder = (FileService.FileServiceBinder) service;
             fileService = binder.getService();
             boundToFileService = true;
