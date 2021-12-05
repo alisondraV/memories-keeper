@@ -28,7 +28,7 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     FirebaseUser user;
-    ArrayAdapter arrayAdapter;
+    ArrayAdapter<MemoryModel> arrayAdapter;
     ArrayList<MemoryModel> arrayList = new ArrayList<>();
 
     @Override
@@ -41,6 +41,7 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference(getString(R.string.memories_collection_name));
         user = FirebaseAuth.getInstance().getCurrentUser();
+        arrayList = new ArrayList<>();
         arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, arrayList);
         setListAdapter(arrayAdapter);
 

@@ -27,8 +27,10 @@ public class MemoryFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.buttonPrevious.setOnClickListener(view1 -> NavHostFragment.findNavController(MemoryFragment.this)
-                .navigate(R.id.action_MemoryFragment_to_ListFragment));
+        binding.buttonPrevious.setOnClickListener(view1 -> NavHostFragment
+                .findNavController(MemoryFragment.this)
+                .popBackStack()
+        );
     }
 
     @Override
