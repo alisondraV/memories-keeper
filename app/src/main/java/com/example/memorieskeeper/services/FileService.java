@@ -1,12 +1,67 @@
 package com.example.memorieskeeper.services;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
 
 import androidx.annotation.Nullable;
 
 public class FileService extends Service {
+    final int NOTIFICATION_ID = 1;
+
+    private Looper serviceLooper;
+    private ServiceHandler serviceHandler;
+    private NotificationManager notificationManager;
+
+    private final class ServiceHandler extends Handler {
+        public ServiceHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            stopSelf(msg.arg1);
+        }
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+
+        HandlerThread thread = new HandlerThread("ServiceStartArguments");
+        thread.start();
+
+        serviceLooper = thread.getLooper();
+        serviceHandler = new ServiceHandler(serviceLooper);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Notification.Builder fileServiceNotificationBuilder = new Notification.Builder(this, "temp")
+                .setContentTitle("Service started");
+        Notification fileServiceNotification = fileServiceNotificationBuilder.build();
+        notificationManager.notify(NOTIFICATION_ID, fileServiceNotification);
+
+        Message msg = serviceHandler.obtainMessage();
+        msg.arg1 = startId;
+        serviceHandler.sendMessage(msg);
+
+        return START_STICKY;
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -14,8 +69,8 @@ public class FileService extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-
-        return super.onStartCommand(intent, flags, startId);
+    public void onDestroy() {
+        super.onDestroy();
+        notificationManager.cancel(NOTIFICATION_ID);
     }
 }
