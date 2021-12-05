@@ -1,13 +1,17 @@
 package com.example.memorieskeeper;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.widget.Button;
@@ -15,6 +19,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.memorieskeeper.services.FileService;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,6 +40,7 @@ public class AddMemoryActivity extends AppCompatActivity {
     FirebaseUser user;
     boolean boundToFileService = false;
     FileService fileService;
+    ActivityResultLauncher<Intent> pickFileLauncher;
 
     ValueEventListener onButtonClickEventListener = new ValueEventListener() {
         @Override
@@ -55,6 +63,19 @@ public class AddMemoryActivity extends AppCompatActivity {
         // bind to services
         Intent intent = new Intent(this, FileService.class);
         bindService(intent, fileServiceConnection, Context.BIND_AUTO_CREATE);
+
+        pickFileLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Uri uri = null;
+                        Intent resultData = result.getData();
+                        if (resultData != null) {
+                            uri = resultData.getData();
+
+                        }
+                    }
+                });
 
         // get UI elements
         txtName = findViewById(R.id.txtName);
@@ -81,6 +102,11 @@ public class AddMemoryActivity extends AppCompatActivity {
         });
 
         btnUploadPhoto.setOnClickListener(view -> {
+            Intent openFileIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("image/*");
+            pickFileLauncher.launch(openFileIntent);
+
             Thread thread = new Thread(() -> {
                 try {
                     Thread.sleep(5000);
