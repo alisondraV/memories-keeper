@@ -2,11 +2,16 @@ package com.example.memorieskeeper;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.database.ServerValue;
+
+import java.util.Date;
+
 public class MemoryModel {
     private String userId;
     private String name;
     private String description;
     private String location;
+    private long createdAt;
 
     public MemoryModel() { }
 
@@ -15,6 +20,7 @@ public class MemoryModel {
         this.name = name;
         this.description = description;
         this.location = location;
+        this.createdAt = new Date().getTime();
     }
 
     public String getUserId() {
@@ -48,6 +54,8 @@ public class MemoryModel {
     public void setLocation(String location) {
         this.location = location;
     }
+
+    public long getCreatedAt() { return this.createdAt; }
 
     @NonNull
     @Override
