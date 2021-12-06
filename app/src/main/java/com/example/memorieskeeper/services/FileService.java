@@ -56,29 +56,23 @@ public class FileService extends Service {
 
     private void uploadImageToFirebase(Uri imageUri) {
         Thread thread = new Thread(() -> {
-            try {
-                Thread.sleep(0);
-                if (imageUri != null) {
-                    UploadTask uploadTask = FirebaseStorage.getInstance()
-                            .getReference(imageUri.getLastPathSegment())
-                            .putFile(imageUri);
-                    uploadTask
-                            .addOnSuccessListener(snapshot -> {
-                                FirebaseStorage.getInstance()
-                                        .getReference(imageUri.getLastPathSegment())
-                                        .getDownloadUrl()
-                                        .addOnSuccessListener(uri -> {
-                                            memory.setImageUrl(uri.toString());
-                                            createRTDBDocument(memory);
-                                        });
-                            })
-                            .addOnFailureListener(this::handleException);
-                } else {
-                    createRTDBDocument(memory);
-                }
-            } catch (InterruptedException e) {
-                stopSelf();
-                Thread.currentThread().interrupt();
+            if (imageUri != null) {
+                UploadTask uploadTask = FirebaseStorage.getInstance()
+                        .getReference(imageUri.getLastPathSegment())
+                        .putFile(imageUri);
+                uploadTask
+                        .addOnSuccessListener(snapshot -> {
+                            FirebaseStorage.getInstance()
+                                    .getReference(imageUri.getLastPathSegment())
+                                    .getDownloadUrl()
+                                    .addOnSuccessListener(uri -> {
+                                        memory.setImageUrl(uri.toString());
+                                        createRTDBDocument(memory);
+                                    });
+                        })
+                        .addOnFailureListener(this::handleException);
+            } else {
+                createRTDBDocument(memory);
             }
         });
         thread.start();
@@ -91,11 +85,6 @@ public class FileService extends Service {
                 .setValue(memory)
                 .addOnSuccessListener(o -> showSuccessNotification())
                 .addOnFailureListener(this::handleException);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
     public void handleException(Exception e) {
@@ -130,10 +119,5 @@ public class FileService extends Service {
                 .setSmallIcon(R.drawable.common_google_signin_btn_icon_light);
         Notification fileServiceNotification = fileServiceNotificationBuilder.build();
         notificationManager.notify(id, fileServiceNotification);
-    }
-
-
-    private void hideNotification() {
-        notificationManager.cancelAll();
     }
 }
