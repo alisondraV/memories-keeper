@@ -1,34 +1,44 @@
 package com.example.memorieskeeper;
 
-import androidx.annotation.NonNull;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import com.google.firebase.database.ServerValue;
+import androidx.annotation.NonNull;
 
 import java.util.Date;
 
-public class MemoryModel {
-    private String userId;
+public class MemoryModel implements Parcelable {
+    private String userName;
     private String name;
     private String description;
     private String location;
     private long createdAt;
+    private String imageUrl;
 
     public MemoryModel() { }
 
-    public MemoryModel(String userId, String name, String description, String location) {
-        this.userId = userId;
+    public MemoryModel(String userName, String name, String description, String location) {
+        this.userName = userName;
         this.name = name;
         this.description = description;
         this.location = location;
         this.createdAt = new Date().getTime();
     }
 
-    public String getUserId() {
-        return userId;
+    public MemoryModel(Parcel parcel) {
+        this.userName = parcel.readString();
+        this.name = parcel.readString();
+        this.description = parcel.readString();
+        this.location = parcel.readString();
+        this.createdAt = parcel.readLong();
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getName() {
@@ -57,9 +67,42 @@ public class MemoryModel {
 
     public long getCreatedAt() { return this.createdAt; }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     @NonNull
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<MemoryModel> CREATOR
+            = new Parcelable.Creator<MemoryModel>() {
+        public MemoryModel createFromParcel(Parcel in) {
+            return new MemoryModel(in);
+        }
+
+        public MemoryModel[] newArray(int size) {
+            return new MemoryModel[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(this.userName);
+        parcel.writeString(this.name);
+        parcel.writeString(this.description);
+        parcel.writeString(this.location);
+        parcel.writeLong(this.createdAt);
     }
 }

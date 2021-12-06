@@ -28,7 +28,30 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
     Query memoriesQuery;
     FirebaseUser user;
     ArrayAdapter<MemoryModel> arrayAdapter;
-    ArrayList<MemoryModel> arrayList = new ArrayList<>();
+
+    ChildEventListener childEventListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            MemoryModel memory = snapshot.getValue(MemoryModel.class);
+            arrayAdapter.add(memory);
+        }
+
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+        }
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+        }
+    };
 
     @Override
     public void onStart() {
@@ -36,37 +59,10 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
 
         memoriesQuery = FirebaseDatabase.getInstance().getReference(getString(R.string.memories_collection_name)).orderByChild("createdAt");
         user = FirebaseAuth.getInstance().getCurrentUser();
-        arrayList = new ArrayList<>();
-        arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, arrayList);
+        arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, new ArrayList<>());
         setListAdapter(arrayAdapter);
 
-        memoriesQuery.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                MemoryModel memory = snapshot.getValue(MemoryModel.class);
-                if (memory.getUserId().equals(user.getUid())) {
-                    arrayList.add(memory);
-                }
-                arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, arrayList);
-                setListAdapter(arrayAdapter);
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+        memoriesQuery.addChildEventListener(childEventListener);
     }
 
     @Override
@@ -91,5 +87,11 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        memoriesQuery.removeEventListener(childEventListener);
     }
 }
