@@ -28,9 +28,6 @@ public class AddMemoryActivity extends AppCompatActivity {
     TextView txtName, txtDescription, txtLocation;
     Button btnAddMemory;
     ImageView imgMemoryPicture;
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
-    FirebaseUser user;
     Uri pickedPhotoUri = null;
 
     ActivityResultLauncher<String> mGetContent = registerForActivityResult(
@@ -40,23 +37,12 @@ public class AddMemoryActivity extends AppCompatActivity {
                 imgMemoryPicture.setImageURI(uri);
             });
 
-    ValueEventListener onButtonClickEventListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot snapshot) {
-            Toast.makeText(AddMemoryActivity.this, "Memory has been successfully created!", Toast.LENGTH_SHORT).show();
-            finish();
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError error) {
-            Toast.makeText(AddMemoryActivity.this, "An error occurred while creating a memory :(", Toast.LENGTH_SHORT).show();
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_memory);
+
+        pickedPhotoUri = null;
 
         // get UI elements
         txtName = findViewById(R.id.txtName);
@@ -66,36 +52,25 @@ public class AddMemoryActivity extends AppCompatActivity {
         imgMemoryPicture = findViewById(R.id.imgMemoryPicture);
 
         // get database and auth reference
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference(getString(R.string.memories_collection_name));
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         // configure UI elements
         btnAddMemory.setOnClickListener(view -> {
             MemoryModel newMemory = new MemoryModel(
-                    user.getUid(),
+                    user == null ? "Anonymous" : user.getDisplayName(),
                     String.valueOf(txtName.getText()),
                     String.valueOf(txtDescription.getText()),
                     String.valueOf(txtLocation.getText()));
-            databaseReference.child(UUID.randomUUID().toString()).setValue(newMemory);
-
-            databaseReference.addValueEventListener(onButtonClickEventListener);
 
             Intent fileUploadIntent = new Intent(AddMemoryActivity.this, FileService.class);
+            fileUploadIntent.putExtra("memory", newMemory);
             fileUploadIntent.setData(pickedPhotoUri);
             fileUploadIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startService(fileUploadIntent);
+            finish();
         });
 
-        imgMemoryPicture.setOnClickListener(view -> {
-            mGetContent.launch("image/*");
-        });
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        databaseReference.removeEventListener(onButtonClickEventListener);
+        imgMemoryPicture.setOnClickListener(view -> mGetContent.launch("image/*"));
     }
 
     @Override

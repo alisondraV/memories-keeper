@@ -7,21 +7,33 @@ import android.app.Service;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.IBinder;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.example.memorieskeeper.AddMemoryActivity;
+import com.example.memorieskeeper.MemoryModel;
 import com.example.memorieskeeper.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.UUID;
+
 public class FileService extends Service {
-    final int NOTIFICATION_ID = 1;
+    public static final String MEMORY_PARAM = "memory";
+    final int NOTIFICATION_PROGRESS_ID = 1;
+    final int NOTIFICATION_SUCCESS_ID = 2;
+    final int NOTIFICATION_ERROR_ID = -1;
     final String CHANNEL_ID = "main";
 
     private NotificationManager notificationManager;
+    private MemoryModel memory;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -31,9 +43,12 @@ public class FileService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        showNotification();
+        NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "main", NotificationManager.IMPORTANCE_HIGH);
+        notificationManager.createNotificationChannel(notificationChannel);
+        showUploadNotification();
 
         Uri imageUri = intent.getData();
+        memory = intent.getParcelableExtra(MEMORY_PARAM);
         uploadImageToFirebase(imageUri);
 
         return super.onStartCommand(intent, flags, startId);
@@ -43,13 +58,24 @@ public class FileService extends Service {
         Thread thread = new Thread(() -> {
             try {
                 Thread.sleep(0);
-                FirebaseStorage.getInstance()
-                        .getReference(imageUri.getLastPathSegment())
-                        .putFile(imageUri)
-                        .addOnCompleteListener(task -> {
-                            stopSelf();
-                            hideNotification();
-                        });
+                if (imageUri != null) {
+                    UploadTask uploadTask = FirebaseStorage.getInstance()
+                            .getReference(imageUri.getLastPathSegment())
+                            .putFile(imageUri);
+                    uploadTask
+                            .addOnSuccessListener(snapshot -> {
+                                FirebaseStorage.getInstance()
+                                        .getReference(imageUri.getLastPathSegment())
+                                        .getDownloadUrl()
+                                        .addOnSuccessListener(uri -> {
+                                            memory.setImageUrl(uri.toString());
+                                            createRTDBDocument(memory);
+                                        });
+                            })
+                            .addOnFailureListener(this::handleException);
+                } else {
+                    createRTDBDocument(memory);
+                }
             } catch (InterruptedException e) {
                 stopSelf();
                 Thread.currentThread().interrupt();
@@ -58,24 +84,56 @@ public class FileService extends Service {
         thread.start();
     }
 
+    private void createRTDBDocument(MemoryModel memory) {
+        FirebaseDatabase.getInstance()
+                .getReference(getString(R.string.memories_collection_name))
+                .child(UUID.randomUUID().toString())
+                .setValue(memory)
+                .addOnSuccessListener(o -> showSuccessNotification())
+                .addOnFailureListener(this::handleException);
+    }
+
     @Override
     public void onDestroy() {
-        hideNotification();
         super.onDestroy();
     }
 
-    public void showNotification() {
-        NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "main", NotificationManager.IMPORTANCE_HIGH);
-        notificationManager.createNotificationChannel(notificationChannel);
-        Notification.Builder fileServiceNotificationBuilder = new Notification.Builder(this, CHANNEL_ID)
-                .setContentTitle("Creating memory...")
-                .setContentText("You're currently using the file service to upload images for your memory.")
-                .setSmallIcon(R.drawable.common_google_signin_btn_icon_light);
-        Notification fileServiceNotification = fileServiceNotificationBuilder.build();
-        notificationManager.notify(NOTIFICATION_ID, fileServiceNotification);
+    public void handleException(Exception e) {
+        showErrorNotification(e.getMessage());
+        stopSelf();
     }
 
+    public void showUploadNotification() {
+        showNotification(
+                NOTIFICATION_PROGRESS_ID,
+                getString(R.string.notification_memory_progress_title),
+                getString(R.string.notification_memory_progress_description)
+        );
+    }
+
+    public void showErrorNotification(String message) {
+        showNotification(NOTIFICATION_ERROR_ID, getString(R.string.notification_memory_error_title), message);
+    }
+
+    public void showSuccessNotification() {
+        showNotification(
+                NOTIFICATION_SUCCESS_ID,
+                getString(R.string.notification_memory_success_title),
+                getString(R.string.notification_memory_success_description)
+        );
+    }
+
+    public void showNotification(int id, String title, String description) {
+        Notification.Builder fileServiceNotificationBuilder = new Notification.Builder(this, CHANNEL_ID)
+                .setContentTitle(title)
+                .setContentText(description)
+                .setSmallIcon(R.drawable.common_google_signin_btn_icon_light);
+        Notification fileServiceNotification = fileServiceNotificationBuilder.build();
+        notificationManager.notify(id, fileServiceNotification);
+    }
+
+
     private void hideNotification() {
-        notificationManager.cancel(NOTIFICATION_ID);
+        notificationManager.cancelAll();
     }
 }

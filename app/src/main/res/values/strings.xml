@@ -17,4 +17,9 @@
     <string name="photo">Photo</string>
     <string name="upload">Upload</string>
     <string name="image_bytes">imageBytes</string>
+    <string name="notification_memory_progress_title">Creating memory...</string>
+    <string name="notification_memory_progress_description">Your memory files are being uploaded to the cloud</string>
+    <string name="notification_memory_error_title">Upload Error</string>
+    <string name="notification_memory_success_description">Your memory was successfully created!</string>
+    <string name="notification_memory_success_title">Memory Created</string>
 </resources>
