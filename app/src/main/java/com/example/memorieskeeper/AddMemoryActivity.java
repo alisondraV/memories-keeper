@@ -1,47 +1,27 @@
 package com.example.memorieskeeper;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.fragment.NavHostFragment;
-
-import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Debug;
-import android.os.IBinder;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.memorieskeeper.services.FileService;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Logger;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.UUID;
 
 public class AddMemoryActivity extends AppCompatActivity {
@@ -101,35 +81,15 @@ public class AddMemoryActivity extends AppCompatActivity {
 
             databaseReference.addValueEventListener(onButtonClickEventListener);
 
-            try {
-                InputStream stream = getContentResolver().openInputStream(pickedPhotoUri);
-                byte[] imageBytes = getBytes(stream);
-                Intent fileUploadIntent = new Intent(AddMemoryActivity.this, FileService.class);
-                fileUploadIntent.putExtra(FileService.BYTES_PARAM, imageBytes);
-                fileUploadIntent.putExtra(FileService.IMAGE_NAME_PARAM, pickedPhotoUri.getLastPathSegment());
-                startService(fileUploadIntent);
-            } catch (FileNotFoundException e) {
-                Log.e("FILE_NOT_FOUND", e.getMessage());
-            } catch (IOException e) {
-                Log.e("IO_EXCEPTION", e.getMessage());
-            }
+            Intent fileUploadIntent = new Intent(AddMemoryActivity.this, FileService.class);
+            fileUploadIntent.setData(pickedPhotoUri);
+            fileUploadIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startService(fileUploadIntent);
         });
 
         imgMemoryPicture.setOnClickListener(view -> {
             mGetContent.launch("image/*");
         });
-    }
-
-    public byte[] getBytes(InputStream inputStream) throws IOException {
-        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-        int bufferSize = 1024;
-        byte[] buffer = new byte[bufferSize];
-
-        int len = 0;
-        while ((len = inputStream.read(buffer)) != -1) {
-            byteBuffer.write(buffer, 0, len);
-        }
-        return byteBuffer.toByteArray();
     }
 
     @Override

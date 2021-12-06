@@ -10,6 +10,7 @@ import android.os.IBinder;
 
 import androidx.annotation.NonNull;
 
+import com.example.memorieskeeper.AddMemoryActivity;
 import com.example.memorieskeeper.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -17,8 +18,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.UploadTask;
 
 public class FileService extends Service {
-    public static final String BYTES_PARAM = "imageBytes";
-    public static final String IMAGE_NAME_PARAM = "imageName";
     final int NOTIFICATION_ID = 1;
     final String CHANNEL_ID = "main";
 
@@ -34,26 +33,25 @@ public class FileService extends Service {
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         showNotification();
 
-        byte[] imageBytes = intent.getByteArrayExtra(BYTES_PARAM);
-        String imageName = intent.getStringExtra(IMAGE_NAME_PARAM);
-
-        uploadImageToFirebase(imageName, imageBytes);
+        Uri imageUri = intent.getData();
+        uploadImageToFirebase(imageUri);
 
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void uploadImageToFirebase(String imageName, byte[] imageBytes) {
+    private void uploadImageToFirebase(Uri imageUri) {
         Thread thread = new Thread(() -> {
             try {
-                Thread.sleep(5000);
+                Thread.sleep(0);
                 FirebaseStorage.getInstance()
-                        .getReference(imageName)
-                        .putBytes(imageBytes)
+                        .getReference(imageUri.getLastPathSegment())
+                        .putFile(imageUri)
                         .addOnCompleteListener(task -> {
                             stopSelf();
                             hideNotification();
                         });
             } catch (InterruptedException e) {
+                stopSelf();
                 Thread.currentThread().interrupt();
             }
         });
