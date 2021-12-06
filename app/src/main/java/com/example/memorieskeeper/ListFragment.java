@@ -33,7 +33,10 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
         @Override
         public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
             MemoryModel memory = snapshot.getValue(MemoryModel.class);
-            arrayAdapter.add(memory);
+            assert memory != null;
+            if (memory.getUserName().equals(user.getDisplayName())) {
+                arrayAdapter.add(memory);
+            }
         }
 
         @Override
