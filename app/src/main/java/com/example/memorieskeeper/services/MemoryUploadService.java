@@ -25,7 +25,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.UUID;
 
-public class FileService extends Service {
+public class MemoryUploadService extends Service {
     public static final String MEMORY_PARAM = "memory";
     final int NOTIFICATION_PROGRESS_ID = 1;
     final int NOTIFICATION_SUCCESS_ID = 2;

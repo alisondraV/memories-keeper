@@ -6,23 +6,14 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.memorieskeeper.services.FileService;
+import com.example.memorieskeeper.services.MemoryUploadService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.UUID;
 
 public class AddMemoryActivity extends AppCompatActivity {
     TextView txtName, txtDescription, txtLocation;
@@ -62,7 +53,7 @@ public class AddMemoryActivity extends AppCompatActivity {
                     String.valueOf(txtDescription.getText()),
                     String.valueOf(txtLocation.getText()));
 
-            Intent fileUploadIntent = new Intent(AddMemoryActivity.this, FileService.class);
+            Intent fileUploadIntent = new Intent(AddMemoryActivity.this, MemoryUploadService.class);
             fileUploadIntent.putExtra("memory", newMemory);
             fileUploadIntent.setData(pickedPhotoUri);
             fileUploadIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

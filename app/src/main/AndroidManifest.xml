@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".services.FileService" />
+        <service android:name=".services.MemoryUploadService" />
     </application>
 
 </manifest>
