@@ -22,4 +22,5 @@
     <string name="notification_memory_error_title">Upload Error</string>
     <string name="notification_memory_success_description">Your memory was successfully created!</string>
     <string name="notification_memory_success_title">Memory Created</string>
+    <string name="created_at">Created On:</string>
 </resources>
