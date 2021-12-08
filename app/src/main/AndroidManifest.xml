@@ -13,7 +13,8 @@
         android:theme="@style/Theme.MemoriesKeeper">
         <activity
             android:name=".AddMemoryActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".HomeActivity" />
         <activity
             android:name=".HomeActivity"
             android:exported="false"

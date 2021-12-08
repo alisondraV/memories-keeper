@@ -7,20 +7,11 @@ import android.app.Service;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.IBinder;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
-import com.example.memorieskeeper.AddMemoryActivity;
 import com.example.memorieskeeper.MemoryModel;
 import com.example.memorieskeeper.R;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.UUID;
