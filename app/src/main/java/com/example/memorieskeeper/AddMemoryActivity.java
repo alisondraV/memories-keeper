@@ -15,6 +15,9 @@ import com.example.memorieskeeper.services.MemoryUploadService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+/*
+    This activity is used for adding a new memory to the firebase real-time database.
+ */
 public class AddMemoryActivity extends AppCompatActivity {
     TextView txtName, txtDescription, txtLocation;
     Button btnAddMemory;

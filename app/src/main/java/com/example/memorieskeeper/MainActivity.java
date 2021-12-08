@@ -1,13 +1,13 @@
 package com.example.memorieskeeper;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.memorieskeeper.services.CustomGoogleAuth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -18,6 +18,10 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+/*
+    This activity is the first one to be opened by  the app.
+    It displays the login screen.
+ */
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "GoogleActivity";
 
@@ -80,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    /*
+        Opens up HomeActivity
+     */
     private void forwardToHome() {
         startActivity(new Intent(this, HomeActivity.class));
     }

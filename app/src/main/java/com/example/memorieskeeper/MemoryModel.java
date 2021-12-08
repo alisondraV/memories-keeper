@@ -7,6 +7,10 @@ import androidx.annotation.NonNull;
 
 import java.util.Date;
 
+/*
+    This class is used for creating and working with memory object,
+    storing and retrieving data from the database.
+ */
 public class MemoryModel implements Parcelable {
     private String userName;
     private String name;

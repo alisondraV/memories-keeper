@@ -11,8 +11,10 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.memorieskeeper.databinding.FragmentMemoryBinding;
 
+/*
+    This fragment represents information about the selected memory from the memories list.
+ */
 public class MemoryFragment extends Fragment {
-
     private FragmentMemoryBinding binding;
 
     @Override

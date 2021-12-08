@@ -22,6 +22,10 @@ import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 
+/*
+    This fragment displays the list of the memories
+    (documents pulled from the firebase real-time database)
+ */
 public class ListFragment extends androidx.fragment.app.ListFragment {
     private FragmentListBinding binding;
 
@@ -32,6 +36,9 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
     ChildEventListener childEventListener = new ChildEventListener() {
         @Override
         public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            /*
+                Create memory object using MemoryModel and add it to the array adapter
+             */
             MemoryModel memory = snapshot.getValue(MemoryModel.class);
             arrayAdapter.add(memory);
         }
@@ -78,6 +85,9 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
     public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
+        /*
+            Navigate back to the memories list
+         */
         NavHostFragment
                 .findNavController(ListFragment.this)
                 .navigate(R.id.action_ListFragment_to_MemoryFragment);
