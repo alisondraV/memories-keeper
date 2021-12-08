@@ -6,76 +6,88 @@
     android:layout_height="match_parent"
     tools:context=".MemoryFragment">
 
-    <TextView
-        android:id="@+id/txtMemoryName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/second_fragment_label"
-        android:textSize="26sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.136"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.076" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:gravity="center_horizontal">
 
-    <TextView
-        android:id="@+id/txtMemoryCreated"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/created_at"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.733"
-        app:layout_constraintStart_toEndOf="@+id/txtMemoryName"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.075" />
+        <TextView
+            android:id="@+id/txtMemoryName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/second_fragment_label"
+            android:textSize="26sp"
+            android:layout_margin="15dp" />
 
-    <TextView
-        android:id="@+id/txtMemoryLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/location"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.863"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtMemoryCreated"
-        app:layout_constraintVertical_bias="0.068" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="5dp">
 
-    <TextView
-        android:id="@+id/txtMemoryLocation2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/location"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/txtMemoryLocation"
-        app:layout_constraintHorizontal_bias="0.220"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtMemoryName"
-        app:layout_constraintVertical_bias="0.06" />
+            <TextView
+                android:id="@+id/textViewCreatedOn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/created_at"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                style="@style/AddMemoryElement" />
 
-    <TextView
-        android:id="@+id/txtMemoryDescription"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:text="@string/description"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtMemoryLocation2"
-        app:layout_constraintVertical_bias="0.065" />
+            <TextView
+                android:id="@+id/txtMemoryCreated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/created_at"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                style="@style/AddMemoryElement" />
+        </LinearLayout>
 
-    <ImageView
-        android:id="@+id/imgMemory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtMemoryDescription"
-        app:layout_constraintVertical_bias="0.167"
-        tools:src="@tools:sample/avatars" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="5dp">
+
+            <TextView
+                android:id="@+id/textViewMemoryLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/location"
+                style="@style/AddMemoryElement" />
+
+            <TextView
+                android:id="@+id/txtMemoryLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/location"
+                style="@style/AddMemoryElement" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textViewMemoryDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/description"
+            style="@style/AddMemoryElement"
+            android:paddingTop="15dp" />
+
+        <TextView
+            android:id="@+id/txtMemoryDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/description"
+            style="@style/AddMemoryElement" />
+
+        <ImageView
+            android:id="@+id/imgMemory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/AddMemoryElement"
+            tools:src="@tools:sample/avatars" />
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
