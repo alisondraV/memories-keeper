@@ -1,10 +1,6 @@
 package com.example.memorieskeeper;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.bumptech.glide.Glide;
 import com.example.memorieskeeper.databinding.FragmentMemoryBinding;
 
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -60,37 +56,12 @@ public class MemoryFragment extends Fragment {
         txtMemoryCreated.setText(dateString);
         txtMemoryLocation.setText(memory.getLocation());
         txtMemoryDescription.setText(memory.getDescription());
-        new DownloadImageTask(imgMemory).execute(memory.getImageUrl());
+        Glide.with(this).load(memory.getImageUrl()).into(imgMemory);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-    }
-
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap bmp = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                bmp = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return bmp;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
     }
 }
