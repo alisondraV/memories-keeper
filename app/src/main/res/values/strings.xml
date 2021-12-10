@@ -4,9 +4,9 @@
     <string name="sign_in">Sign In</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="first_fragment_label">Your Memories List</string>
-    <string name="second_fragment_label">Something else</string>
+    <string name="second_fragment_label">Memory</string>
     <string name="next">Next</string>
-    <string name="previous">Previous</string>
+    <string name="go_back">Go Back to the List</string>
     <string name="log_out">Log out</string>
     <string name="add_memory">Add Memory</string>
     <string name="add_new_memory">Add New Memory</string>
@@ -22,4 +22,6 @@
     <string name="notification_memory_error_title">Upload Error</string>
     <string name="notification_memory_success_description">Your memory was successfully created!</string>
     <string name="notification_memory_success_title">Memory Created</string>
+    <string name="created_at">Created On:</string>
+    <string name="memory_photo">Memory Photo</string>
 </resources>

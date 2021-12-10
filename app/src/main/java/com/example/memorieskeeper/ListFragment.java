@@ -40,7 +40,10 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
                 Create memory object using MemoryModel and add it to the array adapter
              */
             MemoryModel memory = snapshot.getValue(MemoryModel.class);
-            arrayAdapter.add(memory);
+            assert memory != null;
+            if (memory.getUserName().equals(user.getDisplayName())) {
+                arrayAdapter.add(memory);
+            }
         }
 
         @Override
@@ -74,7 +77,8 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
 
     @Override
     public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
+            @NonNull LayoutInflater inflater,
+            ViewGroup container,
             Bundle savedInstanceState
     ) {
         binding = FragmentListBinding.inflate(inflater, container, false);
@@ -86,11 +90,14 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
         super.onListItemClick(l, v, position, id);
 
         /*
-            Navigate back to the memories list
+            Navigate back to the memories list with selected memory
          */
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("memory", arrayAdapter.getItem(position));
+
         NavHostFragment
                 .findNavController(ListFragment.this)
-                .navigate(R.id.action_ListFragment_to_MemoryFragment);
+                .navigate(R.id.action_ListFragment_to_MemoryFragment, bundle);
     }
 
     @Override
