@@ -1,13 +1,13 @@
 package com.example.memorieskeeper;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.memorieskeeper.services.CustomGoogleAuth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -18,6 +18,10 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+/*
+    This activity is the first one to be opened by  the app.
+    It displays the login screen.
+ */
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "GoogleActivity";
 
@@ -52,11 +56,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Sign in with Google
+     */
     private void signIn() {
         Intent signInIntent = CustomGoogleAuth.getGoogleSignInClient(this).getSignInIntent();
         signInLauncher.launch(signInIntent);
     }
 
+    /**
+     * Handle the Google sign in form. Start Firebase auth upon success
+     * @param completedTask the result returned from the Google sign in form
+     */
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
@@ -68,6 +79,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Add the Google user to Firebase
+     * @param idToken the Google auth sign in token
+     */
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         FirebaseAuth.getInstance().signInWithCredential(credential)
@@ -80,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    /*
+        Opens up HomeActivity
+     */
     private void forwardToHome() {
         startActivity(new Intent(this, HomeActivity.class));
     }

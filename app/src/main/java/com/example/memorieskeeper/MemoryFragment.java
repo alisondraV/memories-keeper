@@ -18,6 +18,9 @@ import com.example.memorieskeeper.databinding.FragmentMemoryBinding;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/*
+    This fragment represents information about the selected memory from the memories list.
+ */
 public class MemoryFragment extends Fragment {
     TextView txtMemoryName, txtMemoryCreated, txtMemoryLocation, txtMemoryDescription;
     ImageView imgMemory;
