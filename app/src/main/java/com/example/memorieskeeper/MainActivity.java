@@ -56,11 +56,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Sign in with Google
+     */
     private void signIn() {
         Intent signInIntent = CustomGoogleAuth.getGoogleSignInClient(this).getSignInIntent();
         signInLauncher.launch(signInIntent);
     }
 
+    /**
+     * Handle the Google sign in form. Start Firebase auth upon success
+     * @param completedTask the result returned from the Google sign in form
+     */
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
@@ -72,6 +79,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Add the Google user to Firebase
+     * @param idToken the Google auth sign in token
+     */
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         FirebaseAuth.getInstance().signInWithCredential(credential)
