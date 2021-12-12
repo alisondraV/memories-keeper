@@ -45,6 +45,10 @@ public class MemoryUploadService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
+    /**
+     * Uploads the image to Firebase Storage. If the upload succeeds, starts the creation of a memory document in RTDB.
+     * @param imageUri the URI of the image to upload
+     */
     private void uploadImageToFirebase(Uri imageUri) {
         Thread thread = new Thread(() -> {
             if (imageUri != null) {
@@ -69,6 +73,10 @@ public class MemoryUploadService extends Service {
         thread.start();
     }
 
+    /**
+     * Uploads a memory to Firebase Realtime Database
+     * @param memory the memory to upload
+     */
     private void createRTDBDocument(MemoryModel memory) {
         FirebaseDatabase.getInstance()
                 .getReference(getString(R.string.memories_collection_name))
@@ -78,11 +86,18 @@ public class MemoryUploadService extends Service {
                 .addOnFailureListener(this::handleException);
     }
 
+    /**
+     * Handles an error: shows a notification and stops the service
+     * @param e the exception to handle
+     */
     public void handleException(Exception e) {
         showErrorNotification(e.getMessage());
         stopSelf();
     }
 
+    /**
+     * Shows a notification when the upload is in progress
+     */
     public void showUploadNotification() {
         showNotification(
                 NOTIFICATION_PROGRESS_ID,
@@ -91,10 +106,17 @@ public class MemoryUploadService extends Service {
         );
     }
 
+    /**
+     * Shows an error message if something goes wrong
+     * @param message error message to show
+     */
     public void showErrorNotification(String message) {
         showNotification(NOTIFICATION_ERROR_ID, getString(R.string.notification_memory_error_title), message);
     }
 
+    /**
+     * Shows a success notification, if upload succeeds
+     */
     public void showSuccessNotification() {
         showNotification(
                 NOTIFICATION_SUCCESS_ID,
@@ -103,6 +125,12 @@ public class MemoryUploadService extends Service {
         );
     }
 
+    /**
+     * Shows a generic notification
+     * @param id notification id
+     * @param title notification title
+     * @param description main content of the notification
+     */
     public void showNotification(int id, String title, String description) {
         Notification.Builder fileServiceNotificationBuilder = new Notification.Builder(this, CHANNEL_ID)
                 .setContentTitle(title)

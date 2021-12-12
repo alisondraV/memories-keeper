@@ -16,6 +16,9 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.memorieskeeper.databinding.ActivityHomeBinding;
 import com.example.memorieskeeper.services.CustomGoogleAuth;
 
+/*
+    This activity hosts two fragments: memory list and individual memory page.
+ */
 public class HomeActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
     private ActivityHomeBinding binding;
@@ -29,6 +32,9 @@ public class HomeActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.toolbar);
 
+        /*
+            Instantiate navigation controller, which switches two fragments and controls the appbar
+         */
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_list);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
