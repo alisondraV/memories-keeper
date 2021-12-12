@@ -59,6 +59,7 @@ public class AddMemoryActivity extends AppCompatActivity {
 
             MemoryModel newMemory = new MemoryModel(
                     user == null ? "Anonymous" : user.getDisplayName(),
+                    user == null ? "" : user.getUid(),
                     String.valueOf(txtName.getText()),
                     String.valueOf(txtDescription.getText()),
                     String.valueOf(txtLocation.getText()));

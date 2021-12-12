@@ -41,7 +41,7 @@ public class ListFragment extends androidx.fragment.app.ListFragment {
              */
             MemoryModel memory = snapshot.getValue(MemoryModel.class);
             assert memory != null;
-            if (memory.getUserName().equals(user.getDisplayName())) {
+            if (memory.getUserId().equals(user.getUid())) {
                 arrayAdapter.add(memory);
             }
         }
