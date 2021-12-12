@@ -9,11 +9,12 @@
         <entry key="app/src/main/res/layout-land/activity_main.xml" value="0.1697530864197531" />
         <entry key="app/src/main/res/layout-land/content_list.xml" value="0.1697530864197531" />
         <entry key="app/src/main/res/layout-land/fragment_list.xml" value="0.1697530864197531" />
-        <entry key="app/src/main/res/layout-land/fragment_memory.xml" value="0.1697530864197531" />
+        <entry key="app/src/main/res/layout-land/fragment_memory.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_add_memory.xml" value="0.22735507246376813" />
-        <entry key="app/src/main/res/layout/activity_add_memory.xml" value="0.22735507246376813" />
+        <entry key="app/src/main/res/layout/activity_home.xml" value="0.21829710144927536" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/content_list.xml" value="0.171875" />
         <entry key="app/src/main/res/layout/fragment_list.xml" value="0.13627152988855115" />
         <entry key="app/src/main/res/layout/fragment_memory 2.xml" value="0.1578125" />
         <entry key="app/src/main/res/layout/fragment_memory.xml" value="0.37588795069652764" />
