@@ -13,6 +13,7 @@ import java.util.Date;
  */
 public class MemoryModel implements Parcelable {
     private String userName;
+    private String userId;
     private String name;
     private String description;
     private String location;
@@ -21,8 +22,9 @@ public class MemoryModel implements Parcelable {
 
     public MemoryModel() { }
 
-    public MemoryModel(String userName, String name, String description, String location) {
+    public MemoryModel(String userName, String userId, String name, String description, String location) {
         this.userName = userName;
+        this.userId = userId;
         this.name = name;
         this.description = description;
         this.location = location;
@@ -31,6 +33,7 @@ public class MemoryModel implements Parcelable {
 
     public MemoryModel(Parcel parcel) {
         this.userName = parcel.readString();
+        this.userId = parcel.readString();
         this.name = parcel.readString();
         this.description = parcel.readString();
         this.location = parcel.readString();
@@ -43,6 +46,14 @@ public class MemoryModel implements Parcelable {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -104,6 +115,7 @@ public class MemoryModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(this.userName);
+        parcel.writeString(this.userId);
         parcel.writeString(this.name);
         parcel.writeString(this.description);
         parcel.writeString(this.location);
